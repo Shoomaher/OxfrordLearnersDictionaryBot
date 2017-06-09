@@ -20,6 +20,12 @@ def parse(html):
 	defs = []
 	for defin in definitions:
 		defs.append(defin.text)
-	return defs
+	definition = ' '
+	i=1
+	for d in defs:
+		d = d[0].upper() + d[1:]
+		definition+= str(i) + '. ' + d +'\n'
+		i+=1 
+	return definition
 def search(WORD):
 	return parse(get_html(get_url(WORD)))
