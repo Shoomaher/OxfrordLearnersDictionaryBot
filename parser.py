@@ -12,6 +12,13 @@ def get_url(word):
 		word = word.replace(' ', '-')
 		URL = config.url + word + '_2?q=' + word
 	return URL
+	
+def get_url_magic(url):
+	if url.find('_1') != -1:
+		url = url.replace('_1', '')
+	else:
+		url = url.replace('_2', '')
+	return url
 
 def get_html(url):
 	global code
@@ -19,9 +26,13 @@ def get_html(url):
 		response = urllib.request.urlopen(url)
 		respRead = response.read()
 	except urllib.error.HTTPError as err:
-		print(err.code)
-		code = err.code
-		return 0
+		try: 
+			response = urllib.request.urlopen(get_url_magic(url))
+			respRead = response.read()
+		except urllib.error.HTTPError as err:
+			print(err.code)
+			code = err.code
+			return 0
 	return respRead
 
 def parse(html):
