@@ -1,7 +1,7 @@
 import config
 import telebot
 import urllib
-import newparser
+import parser
 
 bot = telebot.TeleBot(config.token)
 
@@ -11,7 +11,7 @@ def handle_start_help(message):
 
 @bot.message_handler(content_types=["text"])
 def repeat_all_messages(message):
-	bot.send_message(message.chat.id, newparser.search(message.text))
+	bot.send_message(message.chat.id, parser.search(message.text))
 
 if __name__ == '__main__':
 	bot.polling(none_stop=True)
