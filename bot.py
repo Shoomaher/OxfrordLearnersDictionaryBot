@@ -148,22 +148,6 @@ def handle_wordoftheday(message):
 	else:
 		handle_start(message, True)
 	
-@bot.message_handler(commands=['savedb'])
-def handle_updatedb(message):
-	save_db()
-	bot.send_message(message.chat.id, 'OK!')
-	
-
-@bot.message_handler(commands=['readdb'])
-def handle_updatedb(message):
-	read_db()
-	bot.send_message(message.chat.id, 'OK!')
-	
-@bot.message_handler(commands=['printdb'])
-def handle_start_help(message):
-	bot.send_message(message.chat.id, '{} : {}'.format(languages_db.keys(), languages_db.values()))
-
-	
 @bot.message_handler(content_types=["text"])
 def repeat_all_messages(message):
 	if str(message.chat.id) in languages_db.keys():
