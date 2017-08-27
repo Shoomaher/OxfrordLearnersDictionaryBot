@@ -2,14 +2,6 @@ import requests
 import config
 import strings
 apiKey = config.yandex_translate_key
-
-def get_language(text):
-	ind = text.find(" in ")
-	if ind == -1:
-		return 'Please, tell me the language like this:\n _*word or phrase* in russian_'
-	lang = text[ind+4:ind+6]
-	text = text[:ind]
-	return 0
 	
 def translate(req):
 	text = req[1]
@@ -25,3 +17,4 @@ def translate(req):
 		return result
 	else:
 		return '{} {} 😨'.format(strings.get_string(lang,'error'),code)
+	
