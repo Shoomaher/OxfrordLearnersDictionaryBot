@@ -16,6 +16,7 @@ bot = telebot.TeleBot(config.token)
 languages_db = {}
 requests = []
 
+
 def create_request(chat_id):
 	for req in requests:
 		if req[0] == chat_id:
@@ -44,9 +45,9 @@ def isWorking(chat_id):
 	for req in requests:
 		if req[0] == chat_id:
 			return req[3]
-		
+
 ########################################################################
-###		 S E T T I N G S    D A T A B A S E		     ###
+###			 S E T T I N G S    S T O R A G E	     ###
 def read_db():
 	with open('languages_db.csv', "r") as db_file:
 		db_reader = csv.reader(db_file)
@@ -55,7 +56,7 @@ def read_db():
 			row = row.replace('[','').replace(']','').replace('"','').replace('\'','')
 			index = row.find(':')
 			languages_db[row[:index]] = row[index+1:]
-		
+# Using CSV is quite strange idea, but it works !!!		
 def save_db():
 	with open('languages_db.csv', "w") as db_file:
 		db_writer = csv.writer(db_file, delimiter=':')
@@ -105,7 +106,7 @@ def handle_idioms(message):
 		text = message.text			
 		text = text[7:]
 		botan.track(config.botan_key, message.chat.id, message.text, 'Идиомы')
-		bot.send_message(message.chat.id, newparser.search_idioms(text, strings.get_string(languages_db[str(message.chat.id)],'wrong')), parse_mode='Markdown')
+		bot.send_message(message.chat.id, newparser.search_idioms(text, strings.get_string(languages_db[str(message.chat.id)],'wrong'), message.chat.id), parse_mode='Markdown')
 	else:
 		handle_start(message, True)
 
@@ -123,13 +124,7 @@ def process_word_step(message):
 	add_text(message.chat.id, text)
 	bot.reply_to(message, translate.translate(add_lang(message.chat.id, languages_db[str(message.chat.id)])), parse_mode='Markdown')
 	turn_working(message.chat.id)
-'''
-def process_lang_step(message):
-	lang = message.text.lower().strip()
-	bot.reply_to(message, translate.translate(add_lang(message.chat.id, lang)), parse_mode='Markdown')
-	turn_working(message.chat.id)
-	languages_db[message.chat.id]=lang
-'''
+	
 @bot.message_handler(commands=['ilikethisbot'])
 def handle_ilikethisbot(message):
 	if str(message.chat.id) in languages_db.keys():
@@ -144,7 +139,7 @@ def handle_wordoftheday(message):
 		callback_button = types.InlineKeyboardButton(strings.get_string(languages_db[str(message.chat.id)], 'entry'), callback_data="entry")
 		keyboard.add(callback_button)
 		bot.send_message(message.chat.id, newparser.print_word_of_the_day(newparser.get_word_of_the_day()), parse_mode='Markdown', reply_markup=keyboard)
-		# Callback is upper
+		# Callback is above
 	else:
 		handle_start(message, True)
 	
@@ -155,7 +150,7 @@ def repeat_all_messages(message):
 			pass
 		else:
 			botan.track(config.botan_key, message.chat.id, message.text, 'Запрос')
-			bot.send_message(message.chat.id, newparser.search(message.text, strings.get_string(languages_db[str(message.chat.id)], 'wrong')), parse_mode='Markdown')
+			bot.send_message(message.chat.id, newparser.search(message.text, strings.get_string(languages_db[str(message.chat.id)], 'wrong'), message.chat.id), parse_mode='Markdown')
 	else:
 		handle_start(message, True)
 
